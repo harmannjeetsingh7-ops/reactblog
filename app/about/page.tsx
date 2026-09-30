@@ -1,24 +1,18 @@
-import { Post } from "@/app/types/post";
+import Technology from "@/app/components/technology";
+import PageTitle from "@/app/components/pageTitle";
 
-export default async function BlogDetail({
-    params,
-}: {
-    params: Promise<{ id: string }>;
-}) {
-    // Get the blog ID from the URL
-    const { id } = await params;
-
-    // Fetch the blog post
-    const res = await fetch(`https://api.vercel.app/blog/${id}`);
-
-    // Convert the response to a Post object
-    const post: Post = await res.json();
-
+export default function About() {
     return (
         <main>
-            <h1>Blog Detail</h1>
-            <h2>{post.title}</h2>
-            <article>{post.content}</article>
+            <PageTitle title="About" />
+            <h1>About this Site</h1>
+            <p>Built using Next.js in Fall 2026 for COMP2112.</p>
+            <section>
+                <h2>We are using the following technologies:</h2>
+                <Technology name="React.js" url="https://react.dev" />
+                <Technology name="Next.js" url="https://nextjs.org" />
+                <Technology name="Tailwind CSS" url="https://tailwindcss.com" />
+            </section>
         </main>
     );
 }

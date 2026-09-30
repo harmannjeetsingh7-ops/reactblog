@@ -1,4 +1,5 @@
 import {Post} from "@/app/types/post";
+import PageTitle from "@/app/components/pageTitle";
 import Link from "next/link";
 
 export default async function Blog() {
@@ -10,6 +11,7 @@ export default async function Blog() {
 
     return (
         <main>
+            <PageTitle title="Blog" />
             <h1>Blog</h1>
             <ul>
                 {posts.map((post) => (
