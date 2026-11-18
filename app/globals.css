@@ -72,6 +72,27 @@ button, .button {
   border: none;
 }
 
+.card .button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.card button.button {
+    background-color: #dc3545;
+}
+
+.card .button:hover {
+    opacity: 0.8;
+}
+
 button:hover {
   background-color: #1e40af;
   cursor: pointer;
