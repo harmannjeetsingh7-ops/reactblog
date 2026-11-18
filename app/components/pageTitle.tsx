@@ -3,10 +3,11 @@
 import { useEffect } from "react";
 
 export default function PageTitle({ title }: { title: string }) {
-  useEffect(() => {
-    document.title = `${title} - COMP2112`;
-  }, [title]);  
+   // use the effect hook to change the page title in the DOM to the prop value
+    useEffect(() => {
+        document.title = `${title} - COMP2112 Blog`;
+    }, [title]);
 
-  // must return empty value as a tsx component
-  return null;
+    // must return empty value as a tsx component
+    return null;
 }

@@ -3,8 +3,7 @@ export interface Post {
     _id: number;
     title: string;
     author: string;
-    content: string;
     date: string;
+    content: string;
     category: string;
-    
 }

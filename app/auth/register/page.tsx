@@ -1,7 +1,7 @@
 'use client';
 
 import PageTitle from "@/app/components/pageTitle";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 
 interface RegisterFormData {
     username: string;
@@ -12,40 +12,89 @@ interface RegisterFormData {
 export default function Register() {
 
     // set up react-hook-form
-    const { register, handleSubmit, formState: { errors, isSubmitSuccessful }} = useForm<RegisterFormData>();
+    const { register, control, handleSubmit, setError, formState: { errors, isSubmitSuccessful }} = useForm<RegisterFormData>({
+        defaultValues: {
+            username: '',
+            password: '',
+            confirm: ''
+        }
+    });
+
+    const validatePassword = (value: string) => {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+        return passwordRegex.test(value) || "Must be 8+ chars with 1 uppercase, 1 lowercase, 1 number, and 1 special character";
+    };
 
     const onSubmit = async (data: RegisterFormData) => {
         console.log(`Submitted: `, data);
-        console.log("Success");
+
+        try {
+            // set up json payload
+            const payload = {
+                username: data.username,
+                password: data.password
+            }
+
+            // get api domain from .env ; ! at the end is just a null check
+            const apiDomain: string = process.env.NEXT_PUBLIC_API_DOMAIN!;
+
+            // make post request to server API to try registering new user
+            const response: Response = await fetch(`${apiDomain}/users/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            // interpret api response
+            const apiResponse: any = await response.json();
+            console.log(apiResponse);
+
+            if (apiResponse.success === false) {
+                setError("username", {
+                    type: "api",
+                    message: apiResponse.msg || "Registration Failed"
+                });
+            }
+            else {
+                alert("Registration Successful!  Use the Login link above.");
+            }
+        }
+        catch (error: unknown) {
+            console.log(error);
+        }
     }
 
     return (
         <main>
-            <h1>Register</h1>
             <PageTitle title="Register" />
+            <h1>Register</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <fieldset>
-                    <label htmlFor="username">Username: *</label>
-                    <input {...register("username", { required: "Username is required"})} />
+                    <label htmlFor="username">Username:</label>
+                    <input {...register("username", { required: "Username is required" })} type="email" />
                     {errors.username && <span className="error">{errors.username.message}</span>}
                 </fieldset>
-
                 <fieldset>
-                    <label htmlFor="password">Password: *</label>
-                    <input type="password" {...register("password", { required: "Password is required"})} />
+                    <label htmlFor="password">Password:</label>
+                    <input type="password" {...register("password", { required: "Password is required",
+                        validate: validatePassword })} />
                     {errors.password && <span className="error">{errors.password.message}</span>}
                 </fieldset>
-
                 <fieldset>
-                    <label htmlFor="confirm">Confirm: *</label>
-                    <input type="password" {...register("confirm", { required: "Confirm is required"})} />
+                    <label htmlFor="confirm">Confirm Password:</label>
+                    <input
+                        type="password"
+                        {...register("confirm", {
+                            required: "Password Confirmation is required",
+                            validate: (value, formValues) => {
+                                return value === formValues.password || "Passwords do not match"
+                            }
+                        })}
+                    />
                     {errors.confirm && <span className="error">{errors.confirm.message}</span>}
                 </fieldset>
-
                 <button>Register</button>
-
-                {isSubmitSuccessful && <p className="success">Registration Complete</p>}
             </form>
         </main>
-    )
+    );
 }
