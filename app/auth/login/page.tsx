@@ -46,7 +46,7 @@ export default function Login() {
             });
 
             // interpret api response
-            const apiResponse: { success?: boolean; msg?: string } = await response.json();
+            const apiResponse: any = await response.json();
             //console.log(apiResponse);
 
             if (apiResponse.success == false) {
